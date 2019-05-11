@@ -2,7 +2,7 @@
 // Document ready, Handler when the DOM is fully loaded
 document.addEventListener("DOMContentLoaded", function(){
    //  fetch data from navigation.json
-   let cities = '';
+   let cities = '', tabs = '', list = '', indicator = '',  rect = '';
    getJSON('/static/navigation.json',
     function(err, data) {
       if (err !== null) {
@@ -15,7 +15,7 @@ document.addEventListener("DOMContentLoaded", function(){
 
   // Remove active tabs 
   function removeActiveTab(){
-      var tabs = document.getElementsByClassName('tab');
+      tabs = document.getElementsByClassName('tab');
       Array.from(tabs).forEach(function(element) {
         element.classList.remove('current');
       });
@@ -23,28 +23,34 @@ document.addEventListener("DOMContentLoaded", function(){
   
   // Build the dynamic HTML
   function buildNavigation(cities){
-    var list = document.getElementById("list");
+     list = document.getElementById("list");
+
      for (let i = 0; i < cities.length; i++ ) {
         var newLI = document.createElement("li"), // create a new li
             newContent = document.createTextNode(cities[i].label); // grab the city
+        
+        // Make the first menu item active, maybe not required, depending on application
+        if(i == 0) newLI.classList.add('current');
 
         newLI.classList.add('tab');
         newLI.appendChild(newContent);
         list.appendChild(newLI);
     }
+    // Make the first menu item active, maybe not required, depending on application
+    tabs = document.getElementsByClassName('tab');
+    indicator = document.getElementById('indicator'); 
+
+    tabs[0].classList.add('current');
+    rect = tabs[0].getBoundingClientRect();
+    indicator.style.width = tabs[0].clientWidth + 'px';
+
     listenAndMoveIndicator();
   }
 
   // Position the indicator according to onclick
   function listenAndMoveIndicator(){
-    var tabs = document.getElementsByClassName('tab');
-    var indicator = document.getElementById('indicator');  
-    var rect = '';
-    
-    // Make the first menu item active, maybe not required, depending on application
-    tabs[0].classList.add('current');
-    rect = tabs[0].getBoundingClientRect();
-    indicator.style.width = tabs[0].clientWidth + 'px';
+    tabs = document.getElementsByClassName('tab');
+    indicator = document.getElementById('indicator');  
 
     for (let i = 0; i < tabs.length; i++) {
         tabs[i].onclick = function() {
